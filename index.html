@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭课外课程记录与管理系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">
+                <i class="fas fa-calendar-alt"></i>
+                课程管理系统
+            </h1>
+            <div class="nav-buttons">
+                <button id="calendarBtn" class="nav-btn active">
+                    <i class="fas fa-calendar"></i>
+                    日历视图
+                </button>
+                <button id="addCourseBtn" class="nav-btn">
+                    <i class="fas fa-plus"></i>
+                    添加课程
+                </button>
+                <button id="courseManageBtn" class="nav-btn">
+                    <i class="fas fa-cog"></i>
+                    课程管理
+                </button>
+                <button id="statsBtn" class="nav-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    统计分析
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 日历视图 -->
+        <section id="calendarView" class="view-section active">
+            <div class="calendar-header">
+                <button id="prevMonth" class="month-nav">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 id="currentMonth" class="current-month"></h2>
+                <button id="nextMonth" class="month-nav">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="calendar-container">
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- 日历将通过JavaScript生成 -->
+                </div>
+            </div>
+
+            <!-- 日期详情弹窗 -->
+            <div id="dayDetailsModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalDate">日期详情</h3>
+                        <button class="close-btn" onclick="closeDayDetails()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="dayDetailsList" class="day-details-list">
+                            <!-- 当日课程列表将通过JavaScript生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 添加课程视图 -->
+        <section id="addCourseView" class="view-section">
+            <div class="form-container">
+                <h2 class="section-title">添加课程记录</h2>
+                
+                <form id="courseForm" class="course-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="courseDate">
+                                <i class="fas fa-calendar"></i>
+                                日期
+                            </label>
+                            <input type="date" id="courseDate" name="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="courseStudent">
+                                <i class="fas fa-user"></i>
+                                学员
+                            </label>
+                            <select id="courseStudent" name="student" required>
+                                <option value="">请选择学员</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseName">
+                            <i class="fas fa-book"></i>
+                            选择课程
+                        </label>
+                        <select id="courseName" name="courseName" required>
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseNotes">
+                            <i class="fas fa-sticky-note"></i>
+                            备注
+                        </label>
+                        <textarea id="courseNotes" name="notes" rows="4" placeholder="记录课程内容、老师点评、作业等..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            取消
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            保存课程
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 课程记录列表 -->
+            <div class="records-container">
+                <h3 class="section-subtitle">最近记录</h3>
+                <div id="recentRecords" class="recent-records">
+                    <!-- 最近记录将通过JavaScript生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 课程管理视图 -->
+        <section id="courseManageView" class="view-section">
+            <div class="course-manage-container">
+                <h2 class="section-title">课程管理</h2>
+                
+                <!-- 添加新课程 -->
+                <div class="add-course-section">
+                    <h3 class="section-subtitle">添加新课程</h3>
+                    <form id="newCourseForm" class="course-setup-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newCourseContent">
+                                    <i class="fas fa-book-open"></i>
+                                    课程内容
+                                </label>
+                                <input type="text" id="newCourseContent" name="courseContent" placeholder="例如：钢琴课、游泳课、编程课" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newCourseTotalHours">
+                                    <i class="fas fa-clock"></i>
+                                    总课时
+                                </label>
+                                <input type="number" id="newCourseTotalHours" name="totalHours" min="1" placeholder="例如：20" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                添加课程
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 已有课程列表 -->
+                <div class="existing-courses-section">
+                    <h3 class="section-subtitle">已有课程</h3>
+                    <div id="coursesList" class="courses-list">
+                        <!-- 课程列表将通过JavaScript生成 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 统计分析视图 -->
+        <section id="statsView" class="view-section">
+            <div class="stats-container">
+                <h2 class="section-title">统计分析</h2>
+                
+                <!-- 统计筛选器 -->
+                <div class="stats-filters">
+                    <div class="filter-group">
+                        <label for="statsStudent">筛选学员：</label>
+                        <select id="statsStudent" name="statsStudent">
+                            <option value="">全部学员</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="statsDateRange">时间范围：</label>
+                        <select id="statsDateRange" name="statsDateRange">
+                            <option value="all">全部时间</option>
+                            <option value="thisMonth">本月</option>
+                            <option value="lastMonth">上月</option>
+                            <option value="thisYear">今年</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 统计结果 -->
+                <div class="stats-results">
+                    <div class="stats-summary">
+                        <div class="stats-card">
+                            <div class="stats-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="stats-info">
+                                <h4>总课程数</h4>
+                                <p id="totalCourses">0</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stats-info">
+                                <h4>活跃学员</h4>
+                                <p id="activeStudents">0</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <div class="stats-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="stats-info">
+                                <h4>课程类型</h4>
+                                <p id="courseTypes">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 详细统计表格 -->
+                    <div class="stats-table-container">
+                        <h3>详细统计</h3>
+                        <div id="statsTable" class="stats-table">
+                            <!-- 统计表格将通过JavaScript生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 编辑课程弹窗 -->
+    <div id="editCourseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑课程记录</h3>
+                <button class="close-btn" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCourseForm" class="course-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editCourseDate">
+                                <i class="fas fa-calendar"></i>
+                                日期
+                            </label>
+                            <input type="date" id="editCourseDate" name="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editCourseStudent">
+                                <i class="fas fa-user"></i>
+                                学员
+                            </label>
+                            <select id="editCourseStudent" name="student" required>
+                                <option value="">请选择学员</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editCourseName">
+                            <i class="fas fa-book"></i>
+                            选择课程
+                        </label>
+                        <select id="editCourseName" name="courseName" required>
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editCourseNotes">
+                            <i class="fas fa-sticky-note"></i>
+                            备注
+                        </label>
+                        <textarea id="editCourseNotes" name="notes" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" onclick="deleteCourse()">
+                            <i class="fas fa-trash"></i>
+                            删除
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                            <i class="fas fa-times"></i>
+                            取消
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            保存更改
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>系统设置</h3>
+                <button class="close-btn" onclick="closeSettingsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>学员管理</h4>
+                    <div class="student-list" id="studentList">
+                        <!-- 学员列表将通过JavaScript生成 -->
+                    </div>
+                    <div class="add-student-form">
+                        <input type="text" id="newStudentName" placeholder="输入新学员姓名">
+                        <button onclick="addStudent()" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            添加学员
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>数据管理</h4>
+                    <div class="data-actions">
+                        <button onclick="exportData()" class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            导出数据
+                        </button>
+                        <button onclick="importData()" class="btn btn-secondary">
+                            <i class="fas fa-upload"></i>
+                            导入数据
+                        </button>
+                        <button onclick="resetData()" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                            清空所有数据
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置按钮 -->
+    <button id="settingsBtn" class="settings-fab" onclick="openSettingsModal()">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- JavaScript文件 -->
+    <script src="js/app.js"></script>
+</body>
+</html>

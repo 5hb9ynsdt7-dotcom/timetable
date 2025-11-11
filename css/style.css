@@ -1,0 +1,1056 @@
+/* 全局样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8fafc;
+}
+
+/* 顶部导航栏 */
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.nav-title i {
+    margin-right: 8px;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.nav-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+}
+
+.nav-btn.active {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.4);
+}
+
+.nav-btn i {
+    margin-right: 6px;
+}
+
+/* 主要内容区域 */
+.main-content {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 日历视图样式 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.current-month {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.month-nav {
+    background: #667eea;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.month-nav:hover {
+    background: #5a67d8;
+    transform: scale(1.05);
+}
+
+.calendar-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.calendar-day {
+    background: white;
+    padding: 12px 8px;
+    min-height: 80px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.calendar-day:hover {
+    background: #f7fafc;
+    transform: scale(1.02);
+}
+
+.calendar-day.other-month {
+    color: #a0aec0;
+    background: #f8fafc;
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-day.has-courses {
+    border-left: 4px solid #48bb78;
+}
+
+.day-number {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.day-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: auto;
+}
+
+.course-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+}
+
+.course-indicator.student-me { background: #667eea; }
+.course-indicator.student-child1 { background: #48bb78; }
+.course-indicator.student-child2 { background: #ed8936; }
+.course-indicator.student-child3 { background: #e53e3e; }
+
+.calendar-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.calendar-header-day {
+    padding: 10px;
+    text-align: center;
+    background: #edf2f7;
+    border-radius: 4px;
+}
+
+/* 表单样式 */
+.form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2d3748;
+}
+
+.section-subtitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #4a5568;
+}
+
+.course-form {
+    max-width: 600px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a5568;
+}
+
+.form-group label i {
+    margin-right: 6px;
+    color: #667eea;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c53030;
+    transform: translateY(-1px);
+}
+
+/* 最近记录样式 */
+.records-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.recent-records {
+    display: grid;
+    gap: 12px;
+}
+
+.record-item {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.record-item:hover {
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.record-date {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.record-student {
+    background: #edf2f7;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+.record-course {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+.record-notes {
+    color: #718096;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.record-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.record-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.record-btn.edit {
+    background: #667eea;
+    color: white;
+}
+
+.record-btn.edit:hover {
+    background: #5a67d8;
+}
+
+.record-btn.delete {
+    background: #e53e3e;
+    color: white;
+}
+
+.record-btn.delete:hover {
+    background: #c53030;
+}
+
+/* 课程管理样式 */
+.course-manage-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.add-course-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.existing-courses-section {
+    margin-top: 30px;
+}
+
+.course-setup-form {
+    max-width: 600px;
+}
+
+.courses-list {
+    display: grid;
+    gap: 15px;
+}
+
+.course-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.course-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.course-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.course-content {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.course-hours {
+    background: #edf2f7;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.course-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.course-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.course-btn.edit {
+    background: #667eea;
+    color: white;
+}
+
+.course-btn.edit:hover {
+    background: #5a67d8;
+}
+
+.course-btn.delete {
+    background: #e53e3e;
+    color: white;
+}
+
+.course-btn.delete:hover {
+    background: #c53030;
+}
+
+/* 统计分析样式 */
+.stats-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stats-filters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #4a5568;
+    white-space: nowrap;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    min-width: 150px;
+}
+
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stats-card:nth-child(2) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stats-card:nth-child(3) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.9;
+}
+
+.stats-info h4 {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+.stats-info p {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.stats-table-container {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stats-table th {
+    background: #edf2f7;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.stats-table tr:hover {
+    background: #f7fafc;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-20px) scale(0.95); }
+    to { transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #718096;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #e53e3e;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.day-details-list {
+    display: grid;
+    gap: 15px;
+}
+
+.day-detail-item {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.day-detail-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 设置相关样式 */
+.settings-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 50;
+}
+
+.settings-fab:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2d3748;
+}
+
+.student-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.student-name {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.remove-student-btn {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.3s ease;
+}
+
+.remove-student-btn:hover {
+    background: #c53030;
+}
+
+.add-student-form {
+    display: flex;
+    gap: 10px;
+}
+
+.add-student-form input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+.data-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .calendar-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        padding: 8px 6px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .stats-filters {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stats-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .settings-fab {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.1rem;
+    }
+
+    .data-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 0 10px;
+    }
+
+    .form-container,
+    .records-container,
+    .stats-container {
+        padding: 20px 15px;
+    }
+
+    .calendar-container {
+        padding: 15px 10px;
+    }
+
+    .calendar-day {
+        min-height: 50px;
+        padding: 6px 4px;
+        font-size: 0.9rem;
+    }
+
+    .day-indicators {
+        display: none;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .navbar,
+    .nav-buttons,
+    .form-actions,
+    .settings-fab,
+    .modal {
+        display: none !important;
+    }
+
+    .main-content {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .calendar-container,
+    .stats-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 焦点可访问性 */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* 加载动画 */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #4a5568;
+}
+
+.empty-state p {
+    color: #718096;
+}
+
+/* 成功提示样式 */
+.success-message {
+    background: #48bb78;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-message {
+    background: #e53e3e;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 工具提示样式 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 0.8rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
