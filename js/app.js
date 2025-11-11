@@ -37,30 +37,102 @@ class CourseManager {
         }
     }
 
-    // 加载本地存储的数据
+    // 加载本地存储的数据（增强版本）
     loadData() {
-        const savedCourses = localStorage.getItem('familyCourses');
-        const savedStudents = localStorage.getItem('familyStudents');
-        const savedCourseTemplates = localStorage.getItem('familyCourseTemplates');
-        
-        if (savedCourses) {
-            this.courses = JSON.parse(savedCourses);
-        }
-        
-        if (savedStudents) {
-            this.students = JSON.parse(savedStudents);
-        }
-        
-        if (savedCourseTemplates) {
-            this.courseTemplates = JSON.parse(savedCourseTemplates);
+        try {
+            const savedCourses = localStorage.getItem('familyCourses');
+            const savedStudents = localStorage.getItem('familyStudents');
+            const savedCourseTemplates = localStorage.getItem('familyCourseTemplates');
+            const savedTimestamp = localStorage.getItem('familyDataTimestamp');
+            
+            console.log('正在加载本地存储数据...', {
+                hasCoursesData: !!savedCourses,
+                hasStudentsData: !!savedStudents,
+                hasTemplatesData: !!savedCourseTemplates,
+                lastSaveTime: savedTimestamp ? new Date(parseInt(savedTimestamp)) : null
+            });
+            
+            if (savedCourses) {
+                const courses = JSON.parse(savedCourses);
+                if (Array.isArray(courses)) {
+                    this.courses = courses;
+                    console.log('已加载课程记录:', courses.length, '条');
+                }
+            }
+            
+            if (savedStudents) {
+                const students = JSON.parse(savedStudents);
+                if (Array.isArray(students)) {
+                    this.students = students;
+                    console.log('已加载学员信息:', students.length, '名');
+                }
+            }
+            
+            if (savedCourseTemplates) {
+                const templates = JSON.parse(savedCourseTemplates);
+                if (Array.isArray(templates)) {
+                    this.courseTemplates = templates;
+                    console.log('已加载课程模板:', templates.length, '个');
+                }
+            }
+        } catch (error) {
+            console.error('加载数据失败:', error);
+            this.showErrorMessage('数据加载失败，使用默认设置');
         }
     }
 
-    // 保存数据到本地存储
+    // 保存数据到本地存储（增强版本）
     saveData() {
-        localStorage.setItem('familyCourses', JSON.stringify(this.courses));
-        localStorage.setItem('familyStudents', JSON.stringify(this.students));
-        localStorage.setItem('familyCourseTemplates', JSON.stringify(this.courseTemplates));
+        try {
+            // 保存到localStorage
+            localStorage.setItem('familyCourses', JSON.stringify(this.courses));
+            localStorage.setItem('familyStudents', JSON.stringify(this.students));
+            localStorage.setItem('familyCourseTemplates', JSON.stringify(this.courseTemplates));
+            
+            // 额外保存时间戳，用于验证数据完整性
+            localStorage.setItem('familyDataTimestamp', new Date().getTime());
+            
+            console.log('数据已保存到本地存储', {
+                courses: this.courses.length,
+                students: this.students.length,
+                templates: this.courseTemplates.length
+            });
+            
+            // 自动备份（每次保存时创建一个备份副本）
+            this.createAutoBackup();
+        } catch (error) {
+            console.error('保存数据失败:', error);
+            this.showErrorMessage('数据保存失败，请检查浏览器存储设置');
+        }
+    }
+    
+    // 创建自动备份
+    createAutoBackup() {
+        try {
+            const backupData = {
+                courses: this.courses,
+                students: this.students,
+                courseTemplates: this.courseTemplates,
+                backupTime: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            // 保留最近3个备份
+            const backup1 = localStorage.getItem('familyDataBackup1');
+            const backup2 = localStorage.getItem('familyDataBackup2');
+            
+            if (backup1) {
+                localStorage.setItem('familyDataBackup3', backup2 || backup1);
+            }
+            if (backup1) {
+                localStorage.setItem('familyDataBackup2', backup1);
+            }
+            localStorage.setItem('familyDataBackup1', JSON.stringify(backupData));
+            
+            console.log('自动备份已创建');
+        } catch (error) {
+            console.warn('创建备份失败:', error);
+        }
     }
 
     // 初始化默认数据
@@ -79,9 +151,8 @@ class CourseManager {
             this.courseTemplates = [];
         }
 
-        // 确保课程记录为空（线上部署不需要测试数据）
-        this.courses = [];
-        this.saveData();
+        // 只在第一次访问时初始化为空，不覆盖已有数据
+        // 这样用户录入的数据就不会被清除了
     }
 
     // 绑定事件监听器
