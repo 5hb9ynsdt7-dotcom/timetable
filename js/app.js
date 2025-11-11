@@ -73,20 +73,15 @@ class CourseManager {
             this.saveData();
         }
 
-        // 初始化课程模板
+        // 不初始化任何测试数据，保持干净状态
+        // 让用户自己添加课程模板和课程记录
         if (this.courseTemplates.length === 0) {
-            this.courseTemplates = [
-                { id: 1, content: '钢琴课', totalHours: 20 },
-                { id: 2, content: '英语课', totalHours: 24 }
-            ];
-            this.saveData();
+            this.courseTemplates = [];
         }
 
-        // 清空初始化课程数据
-        if (this.courses.length > 0) {
-            this.courses = [];
-            this.saveData();
-        }
+        // 确保课程记录为空（线上部署不需要测试数据）
+        this.courses = [];
+        this.saveData();
     }
 
     // 绑定事件监听器
