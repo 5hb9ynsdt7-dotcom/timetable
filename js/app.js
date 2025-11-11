@@ -16,6 +16,7 @@ class CourseManager {
         this.loadData();
         this.initializeDefaultData();
         this.clearOldStudentData(); // 强制更新学员数据
+        this.loadSharedData(); // 检查是否有分享的数据
         this.bindEvents();
         this.renderCalendar();
         this.updateStudentSelects();
@@ -881,7 +882,9 @@ class CourseManager {
         const data = {
             courses: this.courses,
             students: this.students,
-            exportDate: new Date().toISOString()
+            courseTemplates: this.courseTemplates,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
         };
         
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -893,7 +896,89 @@ class CourseManager {
         a.click();
         
         URL.revokeObjectURL(url);
-        this.showSuccessMessage('数据导出成功！');
+        this.showSuccessMessage('数据已导出！可在其他设备上导入此文件。');
+    }
+    
+    // 生成数据分享链接
+    generateShareLink() {
+        try {
+            const data = {
+                courses: this.courses,
+                students: this.students,
+                courseTemplates: this.courseTemplates,
+                shareDate: new Date().toISOString()
+            };
+            
+            // 压缩数据并编码
+            const compressedData = btoa(encodeURIComponent(JSON.stringify(data)));
+            const currentUrl = window.location.origin + window.location.pathname;
+            const shareUrl = `${currentUrl}?data=${compressedData}`;
+            
+            // 检查URL长度
+            if (shareUrl.length > 8000) {
+                this.showErrorMessage('数据过大，无法通过链接分享。请使用导出功能。');
+                return;
+            }
+            
+            // 复制到剪贴板
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                this.showSuccessMessage('分享链接已复制！发送给其他设备即可同步数据。');
+            }).catch(() => {
+                // 降级处理：显示链接让用户手动复制
+                this.showShareUrlModal(shareUrl);
+            });
+            
+        } catch (error) {
+            console.error('生成分享链接失败:', error);
+            this.showErrorMessage('生成分享链接失败，请使用导出功能。');
+        }
+    }
+    
+    // 显示分享链接模态框
+    showShareUrlModal(url) {
+        const modal = document.createElement('div');
+        modal.className = 'modal show';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>数据分享链接</h3>
+                <p>复制下面的链接发送给其他设备：</p>
+                <textarea readonly style="width: 100%; height: 100px; margin: 10px 0; font-family: monospace;">${url}</textarea>
+                <div class="modal-actions">
+                    <button onclick="this.closest('.modal').remove()" class="btn">关闭</button>
+                    <button onclick="navigator.clipboard.writeText('${url.replace(/'/g, "\\'")}').then(()=>alert('已复制!'))" class="btn btn-primary">复制链接</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // 从URL加载分享的数据
+    loadSharedData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedData = urlParams.get('data');
+        
+        if (sharedData) {
+            try {
+                const decodedData = JSON.parse(decodeURIComponent(atob(sharedData)));
+                
+                if (confirm('检测到分享的数据，是否加载？\n注意：这将覆盖当前所有数据！')) {
+                    this.courses = decodedData.courses || [];
+                    this.students = decodedData.students || [];
+                    this.courseTemplates = decodedData.courseTemplates || [];
+                    
+                    this.saveData();
+                    this.init();
+                    
+                    // 清除URL参数，避免重复加载
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    this.showSuccessMessage('数据已成功同步！');
+                }
+            } catch (error) {
+                console.error('加载分享数据失败:', error);
+                this.showErrorMessage('分享链接无效或数据损坏');
+            }
+        }
     }
 
     // 导入数据
@@ -915,6 +1000,7 @@ class CourseManager {
                         if (confirm('导入数据将覆盖现有数据，确定继续吗？')) {
                             this.courses = data.courses;
                             this.students = data.students;
+                            this.courseTemplates = data.courseTemplates || [];
                             this.saveData();
                             this.init(); // 重新初始化界面
                             this.showSuccessMessage('数据导入成功！');
@@ -1028,6 +1114,10 @@ function addStudent() {
 
 function exportData() {
     app.exportData();
+}
+
+function generateShareLink() {
+    app.generateShareLink();
 }
 
 function importData() {
