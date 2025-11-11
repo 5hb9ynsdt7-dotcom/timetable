@@ -71,6 +71,31 @@ body {
     margin-right: 6px;
 }
 
+/* 分享按钮特殊样式 */
+.share-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    animation: pulse 2s infinite;
+}
+
+.share-btn:hover {
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
+    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+    transform: translateY(-3px);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    }
+    50% {
+        box-shadow: 0 6px 25px rgba(79, 172, 254, 0.7);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    }
+}
+
 /* 主要内容区域 */
 .main-content {
     max-width: 1200px;
