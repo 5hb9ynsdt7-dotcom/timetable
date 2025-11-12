@@ -588,7 +588,7 @@ body {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     min-width: 180px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 500;
     background: white;
     cursor: pointer;
@@ -607,8 +607,8 @@ body {
 }
 
 .filter-group select option {
-    font-size: 1rem;
-    padding: 8px 12px;
+    font-size: 1.1rem;
+    padding: 10px 12px;
 }
 
 .stats-summary {
@@ -883,7 +883,7 @@ body {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     background: white;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 500;
     min-width: 150px;
     cursor: pointer;
@@ -902,8 +902,8 @@ body {
 }
 
 .filter-select option {
-    font-size: 1rem;
-    padding: 8px 12px;
+    font-size: 1.1rem;
+    padding: 10px 12px;
 }
 
 .btn-sm {
@@ -1054,15 +1054,21 @@ body {
     }
 
     .filter-group label {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .filter-group select,
     .filter-select {
         width: 100%;
         min-width: unset;
-        font-size: 1rem;
+        font-size: 1.1rem;
         padding: 14px 16px;
+    }
+
+    .filter-group select option,
+    .filter-select option {
+        font-size: 1.1rem;
+        padding: 10px 12px;
     }
 
     .stats-summary {
