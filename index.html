@@ -137,9 +137,23 @@
 
             <!-- 课程记录列表 -->
             <div class="records-container">
-                <h3 class="section-subtitle">最近记录</h3>
+                <div class="records-header">
+                    <h3 class="section-subtitle">历史记录</h3>
+                    <div class="records-controls">
+                        <select id="recordsFilter" class="filter-select">
+                            <option value="all">全部记录</option>
+                            <option value="thisWeek">本周</option>
+                            <option value="thisMonth">本月</option>
+                            <option value="lastMonth">上月</option>
+                        </select>
+                        <button onclick="app.clearInvalidRecords()" class="btn btn-warning btn-sm">
+                            <i class="fas fa-broom"></i>
+                            清理无效数据
+                        </button>
+                    </div>
+                </div>
                 <div id="recentRecords" class="recent-records">
-                    <!-- 最近记录将通过JavaScript生成 -->
+                    <!-- 历史记录将通过JavaScript生成 -->
                 </div>
             </div>
         </section>

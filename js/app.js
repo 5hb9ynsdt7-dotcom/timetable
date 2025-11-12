@@ -177,6 +177,12 @@ class CourseManager {
         // 统计筛选事件
         document.getElementById('statsStudent').addEventListener('change', () => this.renderStats());
         document.getElementById('statsDateRange').addEventListener('change', () => this.renderStats());
+        
+        // 历史记录筛选事件
+        const recordsFilter = document.getElementById('recordsFilter');
+        if (recordsFilter) {
+            recordsFilter.addEventListener('change', () => this.renderRecentRecords());
+        }
 
         // 点击模态框外部关闭
         window.addEventListener('click', (e) => {
@@ -379,6 +385,11 @@ class CourseManager {
             timestamp: new Date().getTime()
         };
 
+        // 验证数据有效性
+        if (!this.validateCourseData(courseData)) {
+            return;
+        }
+
         this.courses.unshift(courseData);
         this.saveData();
         
@@ -386,6 +397,39 @@ class CourseManager {
         this.clearForm();
         this.renderRecentRecords();
         this.renderCalendar();
+    }
+
+    // 验证课程数据
+    validateCourseData(courseData) {
+        if (!courseData.date || courseData.date.trim() === '') {
+            this.showErrorMessage('请选择上课日期！');
+            return false;
+        }
+        
+        if (!courseData.student || courseData.student.trim() === '') {
+            this.showErrorMessage('请选择学员！');
+            return false;
+        }
+        
+        if (!courseData.courseName || courseData.courseName.trim() === '') {
+            this.showErrorMessage('请选择课程名称！');
+            return false;
+        }
+        
+        // 检查日期格式
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        if (!datePattern.test(courseData.date)) {
+            this.showErrorMessage('日期格式不正确！');
+            return false;
+        }
+        
+        // 检查学员是否存在
+        if (!this.students.some(s => s.name === courseData.student)) {
+            this.showErrorMessage('学员不存在，请先添加学员！');
+            return false;
+        }
+        
+        return true;
     }
 
     // 处理编辑课程表单提交
@@ -504,12 +548,17 @@ class CourseManager {
         });
     }
 
-    // 渲染最近记录
+    // 渲染所有历史记录
     renderRecentRecords() {
         const container = document.getElementById('recentRecords');
-        const recentCourses = this.courses
-            .sort((a, b) => b.timestamp - a.timestamp)
-            .slice(0, 5);
+        const filter = document.getElementById('recordsFilter')?.value || 'all';
+        let recentCourses = this.courses.slice(); // 创建副本
+        
+        // 应用时间过滤
+        recentCourses = this.applyTimeFilter(recentCourses, filter);
+        
+        // 按时间排序
+        recentCourses = recentCourses.sort((a, b) => b.timestamp - a.timestamp);
 
         if (recentCourses.length === 0) {
             container.innerHTML = `
@@ -1064,6 +1113,133 @@ class CourseManager {
         return date1.getFullYear() === date2.getFullYear() &&
                date1.getMonth() === date2.getMonth() &&
                date1.getDate() === date2.getDate();
+    }
+
+    // 时间过滤方法
+    applyTimeFilter(courses, filter) {
+        if (filter === 'all') return courses;
+        
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        switch (filter) {
+            case 'thisWeek':
+                const startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() - today.getDay());
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                
+                return courses.filter(course => {
+                    const courseDate = new Date(course.date);
+                    return courseDate >= startOfWeek && courseDate <= endOfWeek;
+                });
+                
+            case 'thisMonth':
+                const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                
+                return courses.filter(course => {
+                    const courseDate = new Date(course.date);
+                    return courseDate >= startOfMonth && courseDate <= endOfMonth;
+                });
+                
+            case 'lastMonth':
+                const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                
+                return courses.filter(course => {
+                    const courseDate = new Date(course.date);
+                    return courseDate >= startOfLastMonth && courseDate <= endOfLastMonth;
+                });
+                
+            default:
+                return courses;
+        }
+    }
+
+    // 清理无效记录
+    clearInvalidRecords() {
+        const invalidRecords = [];
+        const validRecords = [];
+        
+        this.courses.forEach(course => {
+            if (!this.isValidCourse(course)) {
+                invalidRecords.push(course);
+            } else {
+                validRecords.push(course);
+            }
+        });
+        
+        if (invalidRecords.length === 0) {
+            this.showSuccessMessage('没有发现无效数据！');
+            return;
+        }
+        
+        const confirmMessage = `发现 ${invalidRecords.length} 条无效记录：\n` +
+            invalidRecords.slice(0, 3).map(record => 
+                `- ${record.date || '无日期'} ${record.student || '无学员'} ${record.courseName || '无课程'}`
+            ).join('\n') +
+            (invalidRecords.length > 3 ? '\n...' : '') +
+            '\n\n确定要清理这些无效数据吗？';
+            
+        if (confirm(confirmMessage)) {
+            this.courses = validRecords;
+            this.saveData();
+            this.renderRecentRecords();
+            this.renderCalendar();
+            this.showSuccessMessage(`已清理 ${invalidRecords.length} 条无效记录！`);
+        }
+    }
+
+    // 检查课程记录是否有效
+    isValidCourse(course) {
+        // 检查必要字段
+        if (!course.date || !course.student || !course.courseName) {
+            return false;
+        }
+        
+        // 检查字段类型和格式
+        if (typeof course.date !== 'string' || 
+            typeof course.student !== 'string' || 
+            typeof course.courseName !== 'string') {
+            return false;
+        }
+        
+        // 检查日期格式
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        if (!datePattern.test(course.date)) {
+            return false;
+        }
+        
+        // 检查学员是否存在
+        if (!this.students.some(s => s.name === course.student)) {
+            return false;
+        }
+        
+        // 检查课程名称是否为空或只有空格
+        if (course.courseName.trim() === '') {
+            return false;
+        }
+        
+        return true;
+    }
+
+    // 显示错误消息
+    showErrorMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'error-message';
+        messageDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.querySelector('.main-content').insertBefore(messageDiv, document.querySelector('.main-content').firstChild);
+        
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 4000);
     }
 
     showSuccessMessage(message) {
