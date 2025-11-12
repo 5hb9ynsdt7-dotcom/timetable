@@ -455,6 +455,7 @@ class CourseManager {
             this.closeEditModal();
             this.renderCalendar();
             this.renderRecentRecords();
+            this.renderStats();
         }
     }
 
@@ -682,6 +683,7 @@ class CourseManager {
                         <th>已上课时</th>
                         <th>剩余课时</th>
                         <th>最近上课</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -706,6 +708,11 @@ class CourseManager {
                         <td>${count}小时</td>
                         <td>${remainingHours}小时</td>
                         <td>${latestCourse.date}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="app.showStatsDetails('${student}', '${courseName}')">
+                                <i class="fas fa-eye"></i> 查看详情
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
@@ -1240,6 +1247,123 @@ class CourseManager {
                 messageDiv.parentNode.removeChild(messageDiv);
             }
         }, 4000);
+    }
+
+    // 显示统计详情
+    showStatsDetails(student, courseName) {
+        // 获取该学员该课程的所有记录
+        const detailCourses = this.courses.filter(course => 
+            course.student === student && course.courseName === courseName
+        ).sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // 更新模态框标题和信息
+        document.getElementById('statsDetailsTitle').textContent = `${student} - ${courseName} 详细记录`;
+        document.getElementById('detailTotalRecords').textContent = detailCourses.length;
+        
+        if (detailCourses.length > 0) {
+            const dates = detailCourses.map(c => new Date(c.date));
+            const minDate = new Date(Math.min(...dates));
+            const maxDate = new Date(Math.max(...dates));
+            document.getElementById('detailDateRange').textContent = 
+                `${this.formatDate(minDate)} 至 ${this.formatDate(maxDate)}`;
+        } else {
+            document.getElementById('detailDateRange').textContent = '-';
+        }
+        
+        // 渲染详细记录表格
+        this.renderStatsDetailsList(detailCourses);
+        
+        // 显示模态框
+        document.getElementById('statsDetailsModal').classList.add('show');
+    }
+    
+    // 渲染统计详情列表
+    renderStatsDetailsList(courses) {
+        const container = document.getElementById('statsDetailsList');
+        
+        if (courses.length === 0) {
+            container.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>没有找到相关记录</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        container.innerHTML = '';
+        courses.forEach(course => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${course.date}</td>
+                <td>${course.courseName}</td>
+                <td>${course.student}</td>
+                <td>${course.notes || '暂无备注'}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="app.editCourseFromStats(${course.id})">
+                        <i class="fas fa-edit"></i> 编辑
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="app.deleteCourseFromStats(${course.id})" style="margin-left: 8px;">
+                        <i class="fas fa-trash"></i> 删除
+                    </button>
+                </td>
+            `;
+            container.appendChild(row);
+        });
+    }
+    
+    // 从统计详情中编辑课程
+    editCourseFromStats(courseId) {
+        const course = this.courses.find(c => c.id === courseId);
+        if (!course) return;
+        
+        // 关闭统计详情模态框
+        this.closeStatsDetailsModal();
+        
+        // 调用编辑方法
+        this.editCourse(course);
+    }
+    
+    // 从统计详情中删除课程
+    deleteCourseFromStats(courseId) {
+        const course = this.courses.find(c => c.id === courseId);
+        if (!course) return;
+        
+        if (confirm(`确定要删除"${course.courseName}"课程记录吗？`)) {
+            this.courses = this.courses.filter(c => c.id !== courseId);
+            this.saveData();
+            
+            // 重新渲染统计详情
+            const student = course.student;
+            const courseName = course.courseName;
+            const remainingCourses = this.courses.filter(c => 
+                c.student === student && c.courseName === courseName
+            );
+            
+            if (remainingCourses.length === 0) {
+                // 如果没有剩余记录，关闭模态框并刷新统计页面
+                this.closeStatsDetailsModal();
+            } else {
+                // 重新显示详情
+                this.showStatsDetails(student, courseName);
+            }
+            
+            // 刷新其他视图
+            this.renderCalendar();
+            this.renderRecentRecords();
+            this.renderStats();
+            
+            this.showSuccessMessage('课程记录删除成功！');
+        }
+    }
+    
+    // 关闭统计详情模态框
+    closeStatsDetailsModal() {
+        document.getElementById('statsDetailsModal').classList.remove('show');
     }
 
     showSuccessMessage(message) {

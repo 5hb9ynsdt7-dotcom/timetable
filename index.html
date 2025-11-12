@@ -392,6 +392,48 @@
         </div>
     </div>
 
+    <!-- 统计详情弹窗 -->
+    <div id="statsDetailsModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="statsDetailsTitle">课程详情</h3>
+                <button class="close-btn" onclick="app.closeStatsDetailsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-details-info">
+                    <div class="detail-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">总课程记录：</span>
+                            <span id="detailTotalRecords" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">课程时间段：</span>
+                            <span id="detailDateRange" class="stat-value">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-table-container">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>课程名称</th>
+                                <th>学员</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsDetailsList">
+                            <!-- 详细记录将通过JavaScript生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 设置按钮 -->
     <button id="settingsBtn" class="settings-fab" onclick="openSettingsModal()">
         <i class="fas fa-cog"></i>
