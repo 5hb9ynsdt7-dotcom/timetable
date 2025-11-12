@@ -632,15 +632,6 @@ class CourseManager {
             });
         }
 
-        // 更新统计卡片
-        document.getElementById('totalCourses').textContent = filteredCourses.length;
-        
-        const activeStudents = new Set(filteredCourses.map(course => course.student));
-        document.getElementById('activeStudents').textContent = activeStudents.size;
-        
-        const courseTypes = new Set(filteredCourses.map(course => course.courseName));
-        document.getElementById('courseTypes').textContent = courseTypes.size;
-
         // 生成详细统计表格
         this.renderStatsTable(filteredCourses);
     }
